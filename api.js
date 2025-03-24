@@ -1,3 +1,10 @@
+const fs = require('fs');
+const path = './users.json'; // Aquí se especifica la ruta del archivo donde se guardan los usuarios
+if (!fs.existsSync(path)) {
+    fs.writeFileSync(path, JSON.stringify([])); // Crea el archivo si no existe
+}
+let usersDB1 = JSON.parse(fs.readFileSync(path)); // Leer datos del archivo
+
 const express = require('express');
 const app = express();
 
@@ -59,7 +66,7 @@ app.listen(port, () => {
 
 // Middleware para proteger rutas
 const authMiddleware = (req, res, next) => {
-    const { username, password } = req.headers;
+    const { username, password } = req.body; // Usamos req.body en lugar de req.headers
     const user = usersDB.find(u => u.username === username && u.password === password);
     if (!user) return res.status(403).json({ message: 'Acceso denegado' });
 
